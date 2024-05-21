@@ -1,7 +1,9 @@
-# flutter_mapp_clean_architecture
+# Clean Architecture
 
-Flutter Mapp Clean Architecture Project
+# Flutter
 
-## Getting Started
+# Understand Maintain Extend
 
-Navigate to -> Lib/core/template/info_feature.txt
+State Management - Provider
+
+
