@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_files/core/error/failure.dart';
 import 'package:riverpod_files/features/home/business/entities/product_entity.dart';
@@ -28,58 +29,69 @@ class HomeScreen extends ConsumerWidget {
         title: const Text('Garage Sale Products'),
         actions: const [CartIcon()],
       ),
-      body: ref.watch(productsProvider(5)).when(
-            data: (allProducts) => Padding(
-                padding: const EdgeInsets.all(20),
-                child: GridView.builder(
-                  itemCount: allProducts!.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 20,
-                    crossAxisSpacing: 20,
-                    childAspectRatio: 0.9,
-                  ),
-                  itemBuilder: (context, index) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 10),
-                      color: Colors.blueGrey.withOpacity(0.05),
-                      child: Column(
-                        children: [
-                          Image.asset(allProducts[index].image,
-                              height: 60, width: 60),
-                          Text(allProducts[index].title),
-                          Text("Rs ${allProducts[index].price}"),
-                          if (cartProducts.contains(allProducts[index]))
-                            TextButton(
-                              onPressed: () {
-                                ref
-                                    .read(cartNotifierProvider.notifier)
-                                    .removeProduct(allProducts[index]);
-                              },
-                              child: const Text('Remove'),
-                            ),
-                          if (!cartProducts.contains(allProducts[index]))
-                            TextButton(
-                              onPressed: () {
-                                ref
-                                    .read(cartNotifierProvider.notifier)
-                                    .addProduct(allProducts[index]);
-                              },
-                              child: const Text('Add to Cart'),
-                            ),
-                        ],
-                      ),
-                    );
-                  },
-                )),
-            error: (error, stackTrance) => Center(
-              child: Text("Try Again Later"),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(productsProvider(5));
+        },
+        child: ref.watch(productsProvider(5)).when(
+              data: (allProducts) => Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: GridView.builder(
+                    itemCount: allProducts!.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 20,
+                      crossAxisSpacing: 20,
+                      childAspectRatio: 0.9,
+                    ),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
+                        color: Colors.blueGrey.withOpacity(0.05),
+                        child: Column(
+                          children: [
+                            Image.asset(allProducts[index].image,
+                                height: 60, width: 60),
+                            Text(allProducts[index].title),
+                            Text("Rs ${allProducts[index].price}"),
+                            if (cartProducts.contains(allProducts[index]))
+                              TextButton(
+                                onPressed: () {
+                                  ref
+                                      .read(cartNotifierProvider.notifier)
+                                      .removeProduct(allProducts[index]);
+                                },
+                                child: const Text('Remove'),
+                              ),
+                            if (!cartProducts.contains(allProducts[index]))
+                              TextButton(
+                                onPressed: () {
+                                  ref
+                                      .read(cartNotifierProvider.notifier)
+                                      .addProduct(allProducts[index]);
+                                },
+                                child: const Text('Add to Cart'),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                  )),
+              error: (error, stackTrance) => Center(
+                child: GestureDetector(
+                    onTap: () {
+                      print("object");
+                      ref.refresh(productsProvider(5));
+                    },
+                    child: const Text("Try Again Later")),
+              ),
+              loading: () => const Center(
+                child: CircularProgressIndicator(),
+              ),
             ),
-            loading: () => const Center(
-              child: CircularProgressIndicator(),
-            ),
-          ),
+      ),
     );
   }
 }

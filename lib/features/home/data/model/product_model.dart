@@ -21,4 +21,12 @@ class ProductModel extends ProductEntity {
         price: json[Kprice],
         image: json[Kimage]);
   }
+  Map<String, dynamic> toJson() {
+    return {
+      Kid: id,
+      Ktitle: title,
+      Kprice: price,
+      Kimage: image,
+    };
+  }
 }

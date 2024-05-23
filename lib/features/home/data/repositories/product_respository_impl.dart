@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:riverpod_files/core/error/exceptions.dart';
+import 'package:riverpod_files/features/home/business/entities/product_entity.dart';
 import 'package:riverpod_files/features/home/business/repositories/product_repository.dart';
 import 'package:riverpod_files/features/home/data/datasources/product_datasource.dart';
 import 'package:riverpod_files/features/home/data/model/product_model.dart';
@@ -17,6 +18,18 @@ class ProductRespositoryImpl implements ProductRespository {
     try {
       final allproducts = await remoteDataSource.getProducts(params: params);
       return Right(allproducts);
+    } on ServerException {
+      return Left(ServerFailure(errorMessage: 'This is a server exception'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> postProducts(
+      {required Set<ProductEntity> postProducts}) async {
+    try {
+      final res =
+          await remoteDataSource.postProducts(postProducts: postProducts);
+      return Right(res);
     } on ServerException {
       return Left(ServerFailure(errorMessage: 'This is a server exception'));
     }

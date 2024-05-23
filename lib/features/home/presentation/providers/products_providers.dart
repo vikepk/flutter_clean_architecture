@@ -15,7 +15,7 @@ class ProductsProvider {
   void getProducts({required int value}) async {
     final respository = ProductRespositoryImpl(
         remoteDataSource: ProductRemoteDataSourceImpl(dio: Dio()));
-    final getData = await GetProducts(respository: respository)
+    final getData = await Products(respository: respository)
         .getData(params: ProductParams(params: value));
 
     return getData.fold((failure) {
@@ -38,7 +38,7 @@ final productsProvider =
     FutureProvider.family<List<ProductEntity>, int>((ref, value) async {
   final respository = ProductRespositoryImpl(
       remoteDataSource: ProductRemoteDataSourceImpl(dio: Dio()));
-  final getData = await GetProducts(respository: respository)
+  final getData = await Products(respository: respository)
       .getData(params: ProductParams(params: value));
 
   return getData.fold((failure) => throw failure, (products) => products);
